@@ -12,23 +12,27 @@
   l'immense **معجم البلدان** de Yaqut al-Hamawi, classé par ordre alphabétique
   (حروف المعجم) — idéal pour une navigation A–Z rapide, adaptée aux mobiles.
 - V1 : une page `index.html` autonome (prototype).
-- V2 (**version retenue**) : architecture **Data Chunking** —
+- V2 : architecture **Data Chunking** —
   un fichier **JSON par lettre** dans `data/`, **lazy loading** à l'ouverture
   d'une lettre, recherche live, thème clair/sombre.
+- V3 (**version en ligne**) : ajout du **فهرس المصدر الموحّد** `data/index.json`
+  (noms de villes + fichier du حرف) avec **recherche globale + suggestions**
+  (`jumpToEntry`), + **habillage patrimonial** aligné sur *Nuzhat al-Mushtaq*.
 
 ## 2. Architecture et fichiers
 
 ```
 mujam-al-buldan/
-├── index.html          # interface RTL (Amiri + Cairo)
-├── .nojekyll           # GitHub Pages
-├── data/
-│   ├── A.json          # إشبيلية
-│   ├── B.json          # بغداد
-│   ├── Q.json          # قرطبة
-│   ├── GH.json         # غرناطة
-│   └── T2.json         # طنجة، طرسوس
-└── CONVERSATION_BACKUP.md
+├── index.html       # interface RTL patrimoniale (Aref Ruqaa + Amiri + Cairo)
+    ├── .nojekyll           # GitHub Pages
+    ├── data/
+    │   ├── index.json   # فهرس المصدر الموحّد (villes → fichier du حرف)
+    │   ├── A.json          # إشبيلية
+    │   ├── B.json          # بغداد
+    │   ├── Q.json          # قرطبة
+    │   ├── GH.json         # غرناطة
+    │   └── T2.json         # طنجة، طرسوس
+    └── CONVERSATION_BACKUP.md
 ```
 
 - **Alphabet → fichier** : `alphabetMap` (28 lettres dyalette) :
@@ -38,15 +42,23 @@ mujam-al-buldan/
 
 ## 3. Fonctionnalités
 
+- **Fond patrimonial (Nuzhat-style)** : lignes **Aref Ruqaa** (titres), textes
+  classiques en **Amiri** + stack sûre (*Traditional Arabic / Scheherazade New /
+  Lateef*), interface **Cairo** ; palette **or andalou** sur **brun foncé**
+  (thème par défaut sombre) + thème clair « أحمر ياقوتي عتيق ».
 - **فهرس أبجدي تفاعلي (A–Z)** : barre de boutons, chargement du fichier JSON de
   la lettre sélectionnée uniquement (`fetch('./data/XX.json')`).
 - **بحث حي فوري (Instant Live Search)** : filtre sur la lettre actuellement
   chargée (nom + texte).
-- **بطاقات الأماكن (Location Cards)** : nom, badge de type, texte justifié.
-- **Thème sombre/clair** persistant (`localStorage: mujam_theme`) + amorçage
-  sans flash (`prefers-color-scheme`).
+- **فهرس عام + اقتراحات (Global Index)** : `handleGlobalSearch()` dans
+  `data/index.json`, suggestions `.suggestion-item`, saut direct vers la fiche
+  par `jumpToEntry()` (charge le حرف puis la fiche ciblée).
+- **بطاقات الأماكن (Location Cards)** : nom, badge de type, texte justifié,
+  filet doré (`::before`).
+- **Thème sombre/clair persistant** (`localStorage: mujam_theme`), **sombre par
+  défaut**, amorçage sans flash (script inline avant `initApp`).
 - **المفضلة / Bookmarks** : étoile par fiche, sauvegarde locale
-  (`localStorage: mujam_bookmarks`), bouton « ⭐ المفضلة ».
+  (`localStorage: mujam_bookmarks`), bouton « ⭐ المفضلة (n) ».
 - **Sécurité** : échappement HTML des contenus (`esc()`).
 
 ## 4. Déploiement
@@ -55,8 +67,10 @@ mujam-al-buldan/
 - Branche `main` = source ; branche **`gh-pages` = site publié** (mêmes fichiers,
   site statique).
 - **GitHub Pages** activé sur `gh-pages` / racine → site en ligne.
-- Vérifications live : la page répond **HTTP 200** ; les **5 fichiers**
-  `data/*.json` répondent **HTTP 200** avec le bon nombre de fiches.
+- En ligne : `main` et `gh-pages` **au même commit `fc63516`** (fast-forward).
+- Vérifications live : la page répond **HTTP 200** ; les **6 fichiers**
+  `data/*.json` (dont `index.json`) répondent **HTTP 200**.
+- Validation avant push : JSON parseable, JS `node --check` sur le script extrait.
 
 ## 5. Intégration au link tree `/works`
 
@@ -81,7 +95,7 @@ Fichier : `ucfzem/ucfzem.github.io` → **`works/index.html`** (section ouverte
 | Site en ligne | https://ucfzem.github.io/mujam-al-buldan/ |
 | Dépôt (source) | https://github.com/ucfzem/mujam-al-buldan |
 | Branche de déploiement | https://github.com/ucfzem/mujam-al-buldan/tree/gh-pages |
-| Commit initial du site | https://github.com/ucfzem/mujam-al-buldan/commit/ad0d587 |
+| Commits du site (V3) | https://github.com/ucfzem/mujam-al-buldan/commits/main |
 | Link tree `/works` | https://ucfzem.github.io/works/ |
 | Commit link tree | https://github.com/ucfzem/ucfzem.github.io/commit/e882f95 |
 | Ce backup | https://github.com/ucfzem/mujam-al-buldan/blob/main/CONVERSATION_BACKUP.md |
