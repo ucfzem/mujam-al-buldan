@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>معجم البلدان — ياقوت الحموي | الموسوعة الرقمية</title>
+    <meta name="description" content="الموسوعة الرقمية التفاعلية لمعجم البلدان لشهاب الدين ياقوت الحموي (ت 626 هـ): تصفح أبجدي، بحث فوري، وتحميل النصوص حسب الحروف.">
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Cairo:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #f7f5f0;
+            --text-color: #2b2521;
+            --card-bg: #ffffff;
+            --primary-color: #8c2d19; /* أحمر أندلسي/ياقوتي */
+            --accent-color: #c99a32; /* ذهبي تراثي */
+            --border-color: #e2dacd;
+            --header-bg: #1f1a17;
+            --header-text: #f7f5f0;
+            --badge-bg: #f0ebd9;
+        }
+
+        [data-theme="dark"] {
+            --bg-color: #141211;
+            --text-color: #e6e1da;
+            --card-bg: #1c1917;
+            --primary-color: #d96b52;
+            --accent-color: #e5b342;
+            --border-color: #2e2925;
+            --header-bg: #181513;
+            --header-text: #f7f5f0;
+            --badge-bg: #29231e;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; transition: background 0.3s, color 0.3s; }
+
+        body {
+            font-family: 'Cairo', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.8;
+            padding-bottom: 60px;
+        }
+
+        header {
+            background-color: var(--header-bg);
+            color: var(--header-text);
+            padding: 2rem 1rem;
+            text-align: center;
+            border-bottom: 4px solid var(--accent-color);
+        }
+        header h1 { font-family: 'Amiri', serif; font-size: 2.2rem; color: var(--accent-color); margin-bottom: 0.3rem; }
+        header p { font-size: 0.95rem; opacity: 0.85; font-weight: 300; }
+
+        .container { max-width: 1000px; margin: 1.5rem auto; padding: 0 1rem; }
+
+        .controls-panel {
+            background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 12px;
+            padding: 1rem; margin-bottom: 1.5rem; display: flex; gap: 1rem; flex-wrap: wrap; align-items: center;
+        }
+        .search-box { flex: 1; min-width: 250px; }
+        .search-box input {
+            width: 100%; padding: 0.75rem 1rem; border: 2px solid var(--border-color); border-radius: 8px;
+            background: var(--bg-color); color: var(--text-color); font-family: 'Cairo', sans-serif; font-size: 1rem;
+        }
+        .search-box input:focus { outline: none; border-color: var(--primary-color); }
+
+        .btn-theme, .btn-bookmarks {
+            background: var(--primary-color); color: #fff; border: none; padding: 0.75rem 1.25rem;
+            border-radius: 8px; cursor: pointer; font-family: 'Cairo', sans-serif; font-weight: 600; white-space: nowrap;
+        }
+        .btn-bookmarks { background: var(--accent-color); color: #1f1a17; }
+
+        .alphabet-bar {
+            display: flex; flex-wrap: wrap; gap: 0.4rem; justify-content: center; margin-bottom: 1.5rem;
+            background: var(--card-bg); padding: 0.8rem; border-radius: 10px; border: 1px solid var(--border-color);
+        }
+        .alphabet-bar button {
+            background: var(--bg-color); border: 1px solid var(--border-color); color: var(--text-color);
+            padding: 0.3rem 0.7rem; border-radius: 6px; cursor: pointer; font-family: 'Amiri', serif; font-size: 1.1rem; font-weight: bold;
+        }
+        .alphabet-bar button:hover, .alphabet-bar button.active {
+            background: var(--primary-color); color: #fff; border-color: var(--primary-color);
+        }
+
+        .entry-card {
+            background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 12px;
+            padding: 1.8rem; margin-bottom: 1.5rem; box-shadow: 0 2px 8px rgba(0,0,0,0.02);
+        }
+        .entry-header {
+            display: flex; justify-content: space-between; align-items: center; gap: 0.8rem;
+            border-bottom: 2px solid var(--border-color); padding-bottom: 0.8rem; margin-bottom: 1rem;
+        }
+        .entry-title { font-family: 'Amiri', serif; font-size: 2rem; color: var(--primary-color); }
+        .entry-badge {
+            background: var(--badge-bg); color: var(--accent-color); padding: 0.2rem 0.8rem;
+            border-radius: 20px; font-size: 0.85rem; font-weight: 600; white-space: nowrap;
+        }
+        .entry-actions { display: flex; align-items: center; gap: 0.5rem; }
+        .star-btn {
+            background: transparent; border: 1px solid var(--border-color); border-radius: 50%;
+            width: 2.2rem; height: 2.2rem; cursor: pointer; font-size: 1.1rem; line-height: 1;
+            color: var(--accent-color);
+        }
+        .star-btn.saved { background: var(--accent-color); color: #fff; border-color: var(--accent-color); }
+        .entry-content { font-family: 'Amiri', serif; font-size: 1.25rem; text-align: justify; line-height: 2.1; white-space: pre-line; }
+
+        .loading-state { text-align: center; padding: 2rem; font-size: 1.2rem; opacity: 0.8; }
+        .section-heading { font-family: 'Amiri', serif; font-size: 1.6rem; color: var(--primary-color); margin: 0 0 1rem; }
+        footer { text-align: center; margin-top: 3rem; font-size: 0.9rem; opacity: 0.7; }
+    </style>
+</head>
+<body data-theme="dark">
+
+    <header>
+        <h1>الموسوعة الكاملة: معجم البلدان</h1>
+        <p>شهاب الدين ياقوت الحموي (ت 626 هـ)</p>
+    </header>
+
+    <div class="container">
+        <div class="controls-panel">
+            <div class="search-box">
+                <input type="text" id="searchInput" placeholder="ابحث داخل الحرف المفتوح حالياً..." onkeyup="filterEntries()">
+            </div>
+            <button class="btn-bookmarks" id="bookmarksBtn" onclick="toggleBookmarks()">⭐ المفضلة (<span id="bmCount">0</span>)</button>
+            <button class="btn-theme" onclick="toggleTheme()">تبديل المظهر</button>
+        </div>
+
+        <div class="alphabet-bar" id="alphabetBar"></div>
+        <div id="entriesContainer"></div>
+    </div>
+
+    <footer>
+        <p>المكتبة الرقمية التفاعلية للتراث الجغرافي الإسلامي</p>
+    </footer>
+
+    <script>
+        const alphabetMap = [
+            { label: "أ", file: "A" }, { label: "ب", file: "B" }, { label: "ت", file: "T" },
+            { label: "ث", file: "TH" }, { label: "ج", file: "J" }, { label: "ح", file: "H" },
+            { label: "خ", file: "KH" }, { label: "د", file: "D" }, { label: "ذ", file: "DH" },
+            { label: "ر", file: "R" }, { label: "ز", file: "Z" }, { label: "س", file: "S" },
+            { label: "ش", file: "SH" }, { label: "ص", file: "S2" }, { label: "ض", file: "D2" },
+            { label: "ط", file: "T2" }, { label: "ظ", file: "Z2" }, { label: "ع", file: "E" },
+            { label: "غ", file: "GH" }, { label: "ف", file: "F" }, { label: "ق", file: "Q" },
+            { label: "ك", file: "K" }, { label: "ل", file: "L" }, { label: "م", file: "M" },
+            { label: "ن", file: "N" }, { label: "هـ", file: "H2" }, { label: "و", file: "W" }, { label: "ي", file: "Y" }
+        ];
+
+        const BM_KEY = 'mujam_bookmarks';
+        const THEME_KEY = 'mujam_theme';
+        let currentData = [];
+        let currentFile = null;
+        let bookmarks = loadBookmarks();
+        let showingBookmarks = false;
+
+        function loadBookmarks() {
+            try { return JSON.parse(localStorage.getItem(BM_KEY)) || []; } catch (e) { return []; }
+        }
+        function saveBookmarks() {
+            try { localStorage.setItem(BM_KEY, JSON.stringify(bookmarks)); } catch (e) {}
+            document.getElementById('bmCount').innerText = bookmarks.length;
+        }
+        function isBookmarked(id) { return bookmarks.some((b) => b.id === id); }
+
+        function initAlphabetBar() {
+            const bar = document.getElementById('alphabetBar');
+            alphabetMap.forEach((item, index) => {
+                const btn = document.createElement('button');
+                btn.innerText = item.label;
+                btn.dataset.file = item.file;
+                btn.onclick = () => loadLetterData(item.file, btn);
+                if (index === 0) btn.classList.add('active');
+                bar.appendChild(btn);
+            });
+            loadLetterData(alphabetMap[0].file, bar.firstChild);
+        }
+
+        async function loadLetterData(fileName, btnElement) {
+            const container = document.getElementById('entriesContainer');
+            showingBookmarks = false;
+            currentFile = fileName;
+            document.querySelectorAll('.alphabet-bar button').forEach(b => b.classList.remove('active'));
+            if (btnElement) btnElement.classList.add('active');
+
+            container.innerHTML = '<div class="loading-state">جاري تحميل النصوص الكاملة للحرف...</div>';
+
+            try {
+                const response = await fetch(`./data/${fileName}.json`);
+                if (!response.ok) throw new Error("الملف غير موجود بعد");
+                currentData = await response.json();
+                renderEntries(currentData);
+            } catch (error) {
+                container.innerHTML = `<div class="loading-state">تنبيه: قم بإضافة ملف <code>data/${fileName}.json</code> ليتم عرض نصوص هذا الحرف بالكامل.</div>`;
+            }
+        }
+
+        function esc(s) {
+            return String(s == null ? '' : s)
+                .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+        }
+
+        function renderEntries(data, heading) {
+            const container = document.getElementById('entriesContainer');
+            container.innerHTML = '';
+
+            if (heading) {
+                const h = document.createElement('div');
+                h.className = 'section-heading';
+                h.innerText = heading;
+                container.appendChild(h);
+            }
+
+            if (!data || data.length === 0) {
+                const p = document.createElement('p');
+                p.style.cssText = 'text-align:center; padding: 2rem; opacity:0.7;';
+                p.innerText = 'لا توجد مواد مطابقة.';
+                container.appendChild(p);
+                return;
+            }
+
+            data.forEach(item => {
+                const card = document.createElement('div');
+                card.className = 'entry-card';
+                const saved = isBookmarked(item.id);
+                card.innerHTML = `
+                    <div class="entry-header">
+                        <h2 class="entry-title">${esc(item.name)}</h2>
+                        <div class="entry-actions">
+                            ${item.type ? `<span class="entry-badge">${esc(item.type)}</span>` : ''}
+                            <button class="star-btn ${saved ? 'saved' : ''}" title="إضافة إلى المفضلة"
+                                onclick="toggleBookmark('${esc(item.id)}')">${saved ? '★' : '☆'}</button>
+                        </div>
+                    </div>
+                    <div class="entry-content">${esc(item.text)}</div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function findItem(id) {
+            let item = currentData.find((i) => i.id === id);
+            if (item) return item;
+            return bookmarks.find((i) => i.id === id) || null;
+        }
+
+        function toggleBookmark(id) {
+            const item = findItem(id);
+            if (!item) return;
+            const idx = bookmarks.findIndex((b) => b.id === id);
+            if (idx >= 0) bookmarks.splice(idx, 1);
+            else bookmarks.push(item);
+            saveBookmarks();
+            if (showingBookmarks) renderEntries(bookmarks, 'المفضلة');
+            else renderEntries(applySearch(currentData));
+        }
+
+        function applySearch(data) {
+            const query = document.getElementById('searchInput').value.trim().toLowerCase();
+            if (!query) return data;
+            return data.filter(item =>
+                (item.name || '').toLowerCase().includes(query) ||
+                (item.text || '').toLowerCase().includes(query)
+            );
+        }
+
+        function filterEntries() {
+            if (showingBookmarks) renderEntries(applySearch(bookmarks), 'المفضلة');
+            else renderEntries(applySearch(currentData));
+        }
+
+        function toggleBookmarks() {
+            showingBookmarks = !showingBookmarks;
+            if (showingBookmarks) {
+                document.querySelectorAll('.alphabet-bar button').forEach(b => b.classList.remove('active'));
+                renderEntries(applySearch(bookmarks), 'المفضلة');
+            } else {
+                const btn = document.querySelector(`.alphabet-bar button[data-file="${currentFile}"]`);
+                loadLetterData(currentFile || alphabetMap[0].file, btn);
+            }
+        }
+
+        function toggleTheme() {
+            const body = document.body;
+            const next = body.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+            body.setAttribute('data-theme', next);
+            try { localStorage.setItem(THEME_KEY, next); } catch (e) {}
+        }
+
+        // amorçage du thème (évite le flash)
+        (function () {
+            let t = null;
+            try { t = localStorage.getItem(THEME_KEY); } catch (e) {}
+            if (!t) {
+                t = (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) ? 'dark' : 'light';
+            }
+            document.body.setAttribute('data-theme', t);
+            document.documentElement.setAttribute('data-theme', t);
+        })();
+
+        document.getElementById('bmCount').innerText = bookmarks.length;
+        initAlphabetBar();
+    </script>
+</body>
+</html>
