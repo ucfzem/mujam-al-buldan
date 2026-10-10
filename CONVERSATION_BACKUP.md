@@ -18,6 +18,8 @@
 - V3 (**version en ligne**) : ajout du **فهرس المصدر الموحّد** `data/index.json`
   (noms de villes + fichier du حرف) avec **recherche globale + suggestions**
   (`jumpToEntry`), + **habillage patrimonial** aligné sur *Nuzhat al-Mushtaq*.
+- V4 : **texte intégral** (12 292 fiches) + **vue « 📜 الفهرس » complète**
+  (liste paginée filtrable par حرف).
 
 ## 2. Architecture et fichiers
 
@@ -113,7 +115,9 @@ Fichier : `ucfzem/ucfzem.github.io` → **`works/index.html`** (section ouverte
 | Site en ligne | https://ucfzem.github.io/mujam-al-buldan/ |
 | Dépôt (source) | https://github.com/ucfzem/mujam-al-buldan |
 | Branche de déploiement | https://github.com/ucfzem/mujam-al-buldan/tree/gh-pages |
-| Commits du site (V3 + data) | https://github.com/ucfzem/mujam-al-buldan/commits/main |
+| Commit déployé (`main`=`gh-pages`) | https://github.com/ucfzem/mujam-al-buldan/commit/6d24fa2 |
+| Commit « texte intégral » | https://github.com/ucfzem/mujam-al-buldan/commit/7d1a38e |
+| Tout l'historique (V2→V4) | https://github.com/ucfzem/mujam-al-buldan/commits/main |
 | Link tree `/works` | https://ucfzem.github.io/works/ |
 | Commit link tree | https://github.com/ucfzem/ucfzem.github.io/commit/e882f95 |
 | Ce backup | https://github.com/ucfzem/mujam-al-buldan/blob/main/CONVERSATION_BACKUP.md |
