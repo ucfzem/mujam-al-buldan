@@ -94,6 +94,7 @@
         .alphabet-bar {
             display: flex; flex-wrap: wrap; gap: 0.4rem; justify-content: center; margin-bottom: 2rem;
             background: var(--card-bg); padding: 1rem; border-radius: 12px; border: 1px solid var(--border-color);
+            position: sticky; top: 10px; z-index: 100; box-shadow: 0 4px 12px rgba(0,0,0,0.15);
         }
         .alphabet-bar button {
             background: var(--bg-color); border: 1px solid var(--border-color); color: var(--text-color);
@@ -240,6 +241,18 @@
                 .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
         }
 
+        // توحيد الحروف للتشكيل والهمزات — بحث يصل لنتيجة مهما كتب المستخدم
+        function normalizeArabic(text) {
+            if (!text) return '';
+            return String(text)
+                .replace(/[\u064B-\u065F\u0670]/g, '')
+                .replace(/[أإآ]/g, 'ا')
+                .replace(/ى/g, 'ي')
+                .replace(/ؤ/g, 'و')
+                .replace(/ئ/g, 'ي')
+                .toLowerCase();
+        }
+
         async function initApp() {
             document.getElementById('bmCount').innerText = bookmarks.length;
             initAlphabetBar();
@@ -284,6 +297,7 @@
                 if (!response.ok) throw new Error('ملف الحرف غير متوفر');
                 currentLetterData = await response.json();
                 renderEntries(currentLetterData);
+                window.scrollTo({ top: 0, behavior: 'smooth' });
             } catch (error) {
                 container.innerHTML = `<div class="loading-state">تنبيه: ضع ملف <code>data/${fileName}.json</code> الخاص بهذا الحرف لعرض نصوصه الكاملة هنا.</div>`;
             }
@@ -329,23 +343,25 @@
 
         function filterData(data, query) {
             if (!query) return data;
+            const q = normalizeArabic(query);
             return data.filter(item =>
-                (item.name || '').toLowerCase().includes(query) ||
-                (item.text || '').toLowerCase().includes(query)
+                normalizeArabic(item.name).includes(q) ||
+                normalizeArabic(item.text).includes(q)
             );
         }
 
         // البحث الفوري في الفهرس العام + تصفية الحرف الحالي
         function handleGlobalSearch() {
             const input = document.getElementById('globalSearchInput');
-            const query = input.value.trim().toLowerCase();
+            const raw = input.value.trim();
+            const query = normalizeArabic(raw);
             const box = document.getElementById('suggestionsBox');
             box.innerHTML = '';
 
             if (query.length < 2 || masterIndex.length === 0) {
                 box.style.display = 'none';
             } else {
-                const matches = masterIndex.filter(item => (item.name || '').toLowerCase().includes(query)).slice(0, 10);
+                const matches = masterIndex.filter(item => normalizeArabic(item.name).includes(query)).slice(0, 10);
                 if (matches.length > 0) {
                     box.style.display = 'block';
                     matches.forEach(match => {
@@ -380,10 +396,10 @@
         function deactivateIndexBtn() { setIndexActive(false); }
 
         function indexFilteredList() {
-            const q = document.getElementById('globalSearchInput').value.trim().toLowerCase();
+            const q = normalizeArabic(document.getElementById('globalSearchInput').value);
             return masterIndex.filter(i =>
                 (!indexFilter || i.file === indexFilter) &&
-                (!q || (i.name || '').toLowerCase().includes(q))
+                (!q || normalizeArabic(i.name).includes(q))
             );
         }
 
@@ -494,7 +510,7 @@
                 const data = await res.json();
                 currentLetterData = data;
                 currentFile = item.file;
-                const target = data.find(d => d.id === item.id || d.name === item.name);
+                const target = data.find(d => d.id === item.id || normalizeArabic(d.name) === normalizeArabic(item.name));
                 renderEntries(target ? [target] : data);
                 window.scrollTo({ top: 0, behavior: 'smooth' });
             } catch (e) {
