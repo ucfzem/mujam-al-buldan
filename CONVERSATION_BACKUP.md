@@ -185,6 +185,29 @@ Lien Google Fonts : `Amiri` + `Aref Ruqaa` + `Cairo:400;600;700;800;900` +
 | Apparence originale ancienne + A−/A+ | `314d28a` |
 | Typographie Kufi moderne (Cairo 800) | `c52674c` |
 
+**Description (sous-titre)** : police **Cairo Play** (Google Fonts),
+couleur **`#92b1a3`**, taille **1.25rem**, poids **500**, `direction: rtl`
+(classe `.description` appliquée au `<p>` de l'en-tête).
+
+### Correction — saut horizontal au rafraîchissement (RTL)
+
+Symptôme : en actualisant la page, le contenu sautait vers la droite. Cause :
+**débordement horizontal** (page RTL → la barre de défilement horizontale
+place la vue à droite). Correctifs (commit `299df4c`) :
+
+- `html { overflow-x: clip; }` et `body { overflow-x: clip; max-width:100%; }`
+  — `clip` **ne crée pas** de conteneur de défilement, donc `position: sticky`
+  (barre alphabétique) continue de fonctionner ;
+- `if ('scrollRestoration' in history) history.scrollRestoration = 'manual';`
+  — empêche la restauration d'une position de défilement erronée ;
+- `.entry-header { flex-wrap: wrap; }`, `.entry-title { min-width:0;
+  overflow-wrap: break-word; font-size: clamp(1.6rem,6vw,2.4rem); }`,
+  `.entry-content { overflow-wrap: break-word; }`.
+
+| Étape | Commit |
+|-------|--------|
+| Description Cairo Play + fix saut horizontal RTL | `299df4c` |
+
 ---
 
 *Généré automatiquement par OpenCode.*
