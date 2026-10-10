@@ -5,8 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>معجم البلدان — ياقوت الحموي | الموسوعة الرقمية التراثية</title>
     <meta name="description" content="معجم البلدان لياقوت الحموي (ت 626 هـ): فهرس عام شامل + فهرس أبجدي، بحث فوري، تحميل النصوص حسب الحرف، مفضلة ووضع داكن — بروح تراثية.">
-    <!-- خطوط مطابقة لـ نزهة المشتاق: Cairo (واجهة) + Amiri (نصوص) -->
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&family=Amiri:wght@400;700&display=swap" rel="stylesheet">
+    <!-- خطوط: Cairo (كوفي حديث) للعناوين + Amiri للنصوص + Aref Ruqaa للافتتاحيات -->
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Aref+Ruqaa:wght@400;700&family=Cairo:wght@400;600;700;800;900&family=IBM+Plex+Sans+Arabic:wght@500;700&display=swap" rel="stylesheet">
     <style>
         /* نسخة «نزهة المشتاق» الأصلية القديمة — الوضع الداكن (افتراضي) */
         :root {
@@ -58,13 +58,14 @@
             box-shadow: 0 4px 20px rgba(0,0,0,0.3);
         }
         header h1 {
-            font-family: 'Amiri', serif;
+            font-family: 'Cairo', 'IBM Plex Sans Arabic', sans-serif;
             font-size: 2.8rem;
+            font-weight: 800;
+            letter-spacing: -0.5px;
             color: var(--header-text);
             margin-bottom: 0.5rem;
-            letter-spacing: 1px;
         }
-        header p { font-family: 'Amiri', serif; font-size: 1.2rem; opacity: 0.85; }
+        header p { font-family: 'Cairo', 'IBM Plex Sans Arabic', sans-serif; font-size: 1.1rem; font-weight: 500; opacity: 0.85; }
 
         .container { max-width: 950px; margin: 2rem auto; padding: 0 1rem; }
 
@@ -83,7 +84,7 @@
 
         .btn-theme, .btn-bookmarks {
             background: var(--primary-color); color: #12100e; border: none; padding: 0.85rem 1.5rem;
-            border-radius: 10px; cursor: pointer; font-family: 'Cairo', sans-serif; font-weight: 700; font-size: 1rem; white-space: nowrap;
+            border-radius: 10px; cursor: pointer; font-family: 'Cairo', 'IBM Plex Sans Arabic', sans-serif; font-weight: 800; letter-spacing: -0.5px; font-size: 1rem; white-space: nowrap;
         }
         .btn-bookmarks { background: var(--accent-color); }
         [data-theme="light"] .btn-theme, [data-theme="light"] .btn-bookmarks { color: #fff; }
@@ -167,10 +168,10 @@
             background: var(--primary-color); border-radius: 0 0 4px 4px;
         }
         .entry-header { display: flex; justify-content: space-between; align-items: center; gap: 0.8rem; border-bottom: 2px solid var(--border-color); padding-bottom: 1rem; margin-bottom: 1.5rem; }
-        .entry-title { font-family: 'Amiri', serif; font-size: 2.4rem; color: var(--primary-color); }
+        .entry-title { font-family: 'Cairo', 'IBM Plex Sans Arabic', sans-serif; font-weight: 800; letter-spacing: -0.5px; font-size: 2.4rem; color: var(--primary-color); }
         .entry-badge {
             background: var(--badge-bg); color: var(--primary-color); padding: 0.3rem 1rem; border-radius: 20px;
-            font-size: 0.9rem; font-weight: 600; border: 1px solid var(--border-color); font-family: 'Cairo', sans-serif; white-space: nowrap;
+            font-size: 0.9rem; font-weight: 800; border: 1px solid var(--border-color); font-family: 'Cairo', 'IBM Plex Sans Arabic', sans-serif; white-space: nowrap;
         }
         .entry-actions { display: flex; align-items: center; gap: 0.5rem; }
         .star-btn {
@@ -182,7 +183,10 @@
         .entry-content { font-family: 'Amiri', 'Traditional Arabic', 'Scheherazade New', 'Lateef', serif; font-size: var(--content-font-size); text-align: justify; line-height: 2.3; white-space: pre-line; }
 
         .loading-state { text-align: center; padding: 3rem; font-family: 'Amiri', serif; font-size: 1.4rem; opacity: 0.8; color: var(--primary-color); }
-        .section-heading { font-family: 'Amiri', serif; font-size: 1.9rem; color: var(--primary-color); margin: 0 0 1.2rem; }
+        .section-heading { font-family: 'Cairo', 'IBM Plex Sans Arabic', sans-serif; font-weight: 800; letter-spacing: -0.5px; font-size: 1.9rem; color: var(--primary-color); margin: 0 0 1.2rem; }
+
+        /* العبارات الافتتاحية والتراثية */
+        .calligraphy-heading { font-family: 'Aref Ruqaa', serif; }
 
         footer { text-align: center; margin-top: 4rem; font-size: 0.95rem; opacity: 0.7; font-family: 'Amiri', serif; }
     </style>
