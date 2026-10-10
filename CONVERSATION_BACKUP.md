@@ -164,12 +164,26 @@ comme Nuzhat. Bouton **soleil/lune** (`☀️`/`🌙`).
 **En plus (façon Nuzhat)** : contrôles de taille du texte **A− / A+**
 (variable `--content-font-size`, persistée `mujam_fontsize`).
 
+**Typographie (tolfa moderne + patrimoniale)** — 3 familles :
+
+- **Cairo** (Kufi géométrique moderne, graisse **800**, `letter-spacing:-0.5px`)
+  pour les **titres, en-têtes, badges, boutons et UI** (`h1`, `.entry-title`,
+  `.section-heading`, `.entry-badge`, `.btn-theme`), avec
+  **IBM Plex Sans Arabic** en repli ;
+- **Amiri** (Naskh classique) pour le **corps des textes** (`.entry-content`,
+  suggestions, noms d'index, barre alphabétique) ;
+- **Aref Ruqaa** pour les **phrases d'ouverture** (`.calligraphy-heading`).
+
+Lien Google Fonts : `Amiri` + `Aref Ruqaa` + `Cairo:400;600;700;800;900` +
+`IBM Plex Sans Arabic:500;700`.
+
 **Commits** :
 
 | Étape | Commit |
 |-------|--------|
 | Thème palette Nuzhat (1re passe) | `863eda5` |
 | Apparence originale ancienne + A−/A+ | `314d28a` |
+| Typographie Kufi moderne (Cairo 800) | `c52674c` |
 
 ---
 
