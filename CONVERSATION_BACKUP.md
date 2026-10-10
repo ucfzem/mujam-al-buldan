@@ -137,4 +137,40 @@ Fichier : `ucfzem/ucfzem.github.io` → **`works/index.html`** (section ouverte
 
 ---
 
+## 7. Thème — apparence « Nuzhat al-Mushtaq (version originale ancienne) »
+
+**Demande** : donner à `mujam-al-buldan` les **mêmes polices / thèmes / mode
+sombre-clair** que `nuzhat-al-mushtaq.vercel.app` (version d'origine).
+
+**Polices** : `Cairo` (UI) + `Amiri` (corps du texte) — lien Google Fonts
+identique à Nuzhat. (Retrait d'`Aref Ruqaa`, remplacé par `Amiri`.)
+
+**Palette d'origine (d'après la capture Nuzhat)** :
+
+| Rôle | Sombre (défaut) | Clair |
+|------|-----------------|-------|
+| Fond page `--bg-color` | `#181816` | `#faf5e9` |
+| Texte `--text-color` | `#e0e0e0` | `#2b2118` |
+| En-tête `--header-bg` | `#2d5a42` (vert forêt) | `#2d5a42` |
+| Titre en-tête `--header-text` | `#a8d5ba` (sauge) | `#f5eeda` |
+| Accent or `--primary-color` | `#c2a15d` | `#a9792f` |
+| Accent n°2 `--accent-color` | `#a8d5ba` | `#1f5c46` |
+| Carte `--card-bg` | `#1e1e1b` | `#fffdf6` |
+
+**Mode sombre/clair** : `:root` = sombre (défaut) ; `[data-theme="light"]` =
+clair ; amorçage `mujam_theme` ou `prefers-color-scheme` (sombre par défaut),
+comme Nuzhat. Bouton **soleil/lune** (`☀️`/`🌙`).
+
+**En plus (façon Nuzhat)** : contrôles de taille du texte **A− / A+**
+(variable `--content-font-size`, persistée `mujam_fontsize`).
+
+**Commits** :
+
+| Étape | Commit |
+|-------|--------|
+| Thème palette Nuzhat (1re passe) | `863eda5` |
+| Apparence originale ancienne + A−/A+ | `314d28a` |
+
+---
+
 *Généré automatiquement par OpenCode.*
