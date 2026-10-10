@@ -104,6 +104,41 @@
         }
         [data-theme="light"] .alphabet-bar button.active { color: #fff; }
 
+        /* عرض الفهرس العام */
+        .btn-index {
+            background: var(--badge-bg); color: var(--primary-color); border: 1px solid var(--border-color);
+            padding: 0.85rem 1.5rem; border-radius: 10px; cursor: pointer;
+            font-family: 'Cairo', sans-serif; font-weight: 700; font-size: 1rem; white-space: nowrap;
+        }
+        .btn-index.active { background: var(--primary-color); color: #12100e; border-color: var(--primary-color); }
+        [data-theme="light"] .btn-index.active { color: #fff; }
+        .index-chips { display: flex; flex-wrap: wrap; gap: 0.35rem; justify-content: center; margin-bottom: 1rem; }
+        .index-chips button {
+            background: var(--bg-color); border: 1px solid var(--border-color); color: var(--text-color);
+            padding: 0.25rem 0.6rem; border-radius: 20px; cursor: pointer; font-family: 'Cairo', sans-serif; font-size: 0.85rem;
+        }
+        .index-chips button:hover, .index-chips button.active { background: var(--accent-color); color: #12100e; border-color: var(--accent-color); }
+        [data-theme="light"] .index-chips button.active { color: #fff; }
+        .index-row {
+            display: flex; justify-content: space-between; align-items: center; gap: 0.8rem;
+            padding: 0.7rem 1.1rem; margin-bottom: 0.45rem; border: 1px solid var(--border-color);
+            background: var(--card-bg); border-radius: 10px; cursor: pointer;
+        }
+        .index-row:hover { border-color: var(--primary-color); background: var(--badge-bg); }
+        .index-row strong { font-family: 'Amiri', serif; font-size: 1.25rem; color: var(--primary-color); }
+        .index-row small { opacity: 0.65; font-family: 'Cairo', sans-serif; }
+        .index-row .letter-tag {
+            background: var(--badge-bg); border: 1px solid var(--border-color); color: var(--accent-color);
+            font-family: 'Amiri', serif; font-size: 0.95rem; padding: 0.15rem 0.6rem; border-radius: 6px;
+        }
+        #loadMore {
+            display: block; margin: 1.2rem auto; background: var(--primary-color); color: #12100e;
+            border: none; padding: 0.7rem 2rem; border-radius: 10px; cursor: pointer;
+            font-family: 'Cairo', sans-serif; font-weight: 700; font-size: 0.95rem;
+        }
+        [data-theme="light"] #loadMore { color: #fff; }
+        #loadMore:disabled { opacity: 0.5; cursor: default; }
+
         /* بطاقات العرض التراثية */
         .entry-card {
             background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 16px;
@@ -148,6 +183,7 @@
                 <input type="text" id="globalSearchInput" placeholder="ابحث في الفهرس العام (مثال: قرطبة، بغداد، طنجة)..." oninput="handleGlobalSearch()" autocomplete="off">
                 <div id="suggestionsBox" class="suggestions-box"></div>
             </div>
+            <button class="btn-index" id="idxBtn" onclick="toggleIndexView()">📜 الفهرس (<span id="idxCount">…</span>)</button>
             <button class="btn-bookmarks" id="bookmarksBtn" onclick="toggleBookmarks()">⭐ المفضلة (<span id="bmCount">0</span>)</button>
             <button class="btn-theme" onclick="toggleTheme()">تبديل المظهر</button>
         </div>
@@ -182,6 +218,11 @@
         let currentLetterData = [];    // مواد الحرف المفتوح حالياً
         let currentFile = null;
         let showingBookmarks = false;
+        let showingIndex = false;      // عرض الفهرس العام الكامل
+        let indexFilter = '';          // مرشح الحرف داخل الفهرس
+        let indexPage = 1;             // صفحة التصفح الحالية للفهرس
+        const INDEX_PAGE = 120;        // عدد المواضع لكل دفعة
+        let letterCounts = {};
         let bookmarks = loadBookmarks();
 
         function loadBookmarks() {
@@ -206,6 +247,9 @@
             try {
                 const res = await fetch('./data/index.json');
                 if (res.ok) masterIndex = await res.json();
+                letterCounts = {};
+                masterIndex.forEach(i => { if (i.file) letterCounts[i.file] = (letterCounts[i.file] || 0) + 1; });
+                document.getElementById('idxCount').innerText = masterIndex.length;
             } catch (e) {
                 console.log('جاري إعداد الفهرس العام');
             }
@@ -227,6 +271,8 @@
         async function loadLetterData(fileName, btnElement) {
             const container = document.getElementById('entriesContainer');
             showingBookmarks = false;
+            showingIndex = false;
+            deactivateIndexBtn();
             currentFile = fileName;
             document.querySelectorAll('.alphabet-bar button').forEach(b => b.classList.remove('active'));
             if (btnElement) btnElement.classList.add('active');
@@ -318,15 +364,127 @@
                 }
             }
 
-            if (showingBookmarks) renderEntries(filterData(bookmarks, query), 'المفضلة');
+            if (showingIndex) {
+                indexPage = 1;
+                renderIndexView();
+            } else if (showingBookmarks) renderEntries(filterData(bookmarks, query), 'المفضلة');
             else if (query.length === 0) renderEntries(currentLetterData);
             else renderEntries(filterData(currentLetterData, query));
+        }
+
+        // —————— الفهرس العام الكامل ——————
+        function setIndexActive(on) {
+            const b = document.getElementById('idxBtn');
+            if (b) { if (on) b.classList.add('active'); else b.classList.remove('active'); }
+        }
+        function deactivateIndexBtn() { setIndexActive(false); }
+
+        function indexFilteredList() {
+            const q = document.getElementById('globalSearchInput').value.trim().toLowerCase();
+            return masterIndex.filter(i =>
+                (!indexFilter || i.file === indexFilter) &&
+                (!q || (i.name || '').toLowerCase().includes(q))
+            );
+        }
+
+        function toggleIndexView() {
+            showingIndex = !showingIndex;
+            if (showingIndex) {
+                showingBookmarks = false;
+                indexPage = 1;
+                renderIndexView();
+            } else {
+                const btn = document.querySelector(`.alphabet-bar button[data-file="${currentFile}"]`);
+                loadLetterData(currentFile || alphabetMap[0].file, btn);
+            }
+        }
+
+        function renderIndexView() {
+            showingIndex = true;
+            showingBookmarks = false;
+            setIndexActive(true);
+            document.querySelectorAll('.alphabet-bar button').forEach(b => b.classList.remove('active'));
+
+            const c = document.getElementById('entriesContainer');
+            c.innerHTML = '';
+
+            const list = indexFilteredList();
+
+            const chips = document.createElement('div');
+            chips.className = 'index-chips';
+
+            const allBtn = document.createElement('button');
+            allBtn.innerText = `الكل (${masterIndex.length})`;
+            if (indexFilter === '') allBtn.classList.add('active');
+            allBtn.onclick = () => { indexFilter = ''; indexPage = 1; renderIndexView(); };
+            chips.appendChild(allBtn);
+
+            alphabetMap.forEach(a => {
+                const n = letterCounts[a.file] || 0;
+                if (n === 0) return;
+                const b = document.createElement('button');
+                b.innerText = `${a.label} (${n})`;
+                if (indexFilter === a.file) b.classList.add('active');
+                b.onclick = () => { indexFilter = a.file; indexPage = 1; renderIndexView(); };
+                chips.appendChild(b);
+            });
+            c.appendChild(chips);
+
+            if (list.length === 0) {
+                const p = document.createElement('p');
+                p.style.cssText = 'text-align:center; padding: 2.5rem; font-family: Amiri; font-size: 1.3rem; opacity:0.7;';
+                p.innerText = 'لا توجد مواجز مطابقة في الفهرس.';
+                c.appendChild(p);
+                return;
+            }
+
+            indexPage = 1;
+            appendIndexRows();
+        }
+
+        function appendIndexRows() {
+            const c = document.getElementById('entriesContainer');
+            const list = indexFilteredList();
+            const start = (indexPage - 1) * INDEX_PAGE;
+            const slice = list.slice(start, start + INDEX_PAGE);
+
+            const wrap = document.createElement('div');
+            slice.forEach(item => {
+                const row = document.createElement('div');
+                row.className = 'index-row';
+                row.innerHTML = `
+                    <strong>${esc(item.name)}</strong>
+                    <span style="display:flex; gap:.5rem; align-items:center;">
+                        <small>${esc(item.type || 'موضع جغرافي')}</small>
+                        <span class="letter-tag">${esc(item.file || '')}</span>
+                    </span>`;
+                row.onclick = () => jumpToEntry(item);
+                wrap.appendChild(row);
+            });
+            c.appendChild(wrap);
+
+            const old = document.getElementById('loadMore');
+            if (old) old.remove();
+
+            const shown = Math.min(list.length, start + INDEX_PAGE);
+            const btn = document.createElement('button');
+            btn.id = 'loadMore';
+            if (list.length > shown) {
+                btn.innerText = `عرض المزيد (${shown} من ${list.length})`;
+                btn.onclick = () => { indexPage++; appendIndexRows(); };
+            } else {
+                btn.innerText = `نهاية الفهرس — ${shown} موضع`;
+                btn.disabled = true;
+            }
+            c.appendChild(btn);
         }
 
         async function jumpToEntry(item) {
             const container = document.getElementById('entriesContainer');
             container.innerHTML = '<div class="loading-state">جاري استدعاء الموضع من أوراق المعجم...</div>';
             showingBookmarks = false;
+            showingIndex = false;
+            deactivateIndexBtn();
             document.querySelectorAll('.alphabet-bar button').forEach(b => b.classList.remove('active'));
             const btn = document.querySelector(`.alphabet-bar button[data-file="${item.file}"]`);
             if (btn) btn.classList.add('active');
@@ -365,6 +523,10 @@
 
         function toggleBookmarks() {
             showingBookmarks = !showingBookmarks;
+            if (showingBookmarks) {
+                showingIndex = false;
+                setIndexActive(false);
+            }
             const query = document.getElementById('globalSearchInput').value.trim().toLowerCase();
             if (showingBookmarks) {
                 document.querySelectorAll('.alphabet-bar button').forEach(b => b.classList.remove('active'));

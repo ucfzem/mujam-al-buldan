@@ -25,13 +25,11 @@
 mujam-al-buldan/
 ├── index.html       # interface RTL patrimoniale (Aref Ruqaa + Amiri + Cairo)
     ├── .nojekyll           # GitHub Pages
+    ├── tools/
+    │   └── build_data.mjs  # extracteur texte intégral → JSON par lettre + index
     ├── data/
-    │   ├── index.json   # فهرس المصدر الموحّد (villes → fichier du حرف)
-    │   ├── A.json          # إشبيلية
-    │   ├── B.json          # بغداد
-    │   ├── Q.json          # قرطبة
-    │   ├── GH.json         # غرناطة
-    │   └── T2.json         # طنجة، طرسوس
+    │   ├── index.json   # فهرس المصدر الموحّد (12 292 villes → fichier du حرف)
+    │   └── A…Y.json     # 28 fichiers (un par حرف, par كتاب)
     └── CONVERSATION_BACKUP.md
 ```
 
@@ -53,6 +51,9 @@ mujam-al-buldan/
 - **فهرس عام + اقتراحات (Global Index)** : `handleGlobalSearch()` dans
   `data/index.json`, suggestions `.suggestion-item`, saut direct vers la fiche
   par `jumpToEntry()` (charge le حرف puis la fiche ciblée).
+- **Vue « 📜 الفهرس » complète** : bouton dans la barre d'outils → liste
+  paginée (120/lot, « عرض المزيد ») de l'index entier (12 292), filtres par
+  حرف (`letter-counts`) + recherche live, chaque ligne ouvre la fiche complet.
 - **بطاقات الأماكن (Location Cards)** : nom, badge de type, texte justifié,
   filet doré (`::before`).
 - **Thème sombre/clair persistant** (`localStorage: mujam_theme`), **sombre par
@@ -67,10 +68,27 @@ mujam-al-buldan/
 - Branche `main` = source ; branche **`gh-pages` = site publié** (mêmes fichiers,
   site statique).
 - **GitHub Pages** activé sur `gh-pages` / racine → site en ligne.
-- En ligne : `main` et `gh-pages` **au même commit `fc63516`** (fast-forward).
-- Vérifications live : la page répond **HTTP 200** ; les **6 fichiers**
-  `data/*.json` (dont `index.json`) répondent **HTTP 200**.
+- En ligne : `main` et `gh-pages` **au même commit** (fast-forward).
 - Validation avant push : JSON parseable, JS `node --check` sur le script extrait.
+
+## 4 bis. Texte intégral — extraction automatique
+
+- **Source** : édition OpenITI/Shamela du livre **23735** (دار صادر 1995) au
+  format **mARkdown** (`0626YaqutHamawi.MucjamBuldan.Shamela0023735-ara1`,
+  ~10 Mo) — script **`tools/build_data.mjs`**.
+- **Structure mARkdown** : articles signalés `### ||| $ Nom du lieu:` groupés
+  dans les `### || باب X والـY`.
+- **Résultat** : **12 292 fiches** réparties par lettre selon **le كتاب du
+  livre** (bâtir sur le premier حرف nommé du باب : *باب الهمزة والواو* → fichier
+  A, y compris les formes en « وآبل… ») ; **`data/index.json`** = index global
+  (12 292 entrées).
+- **Nettoyage** : suppression des marqueurs (`#`,`~~`, `%~%`, `ms\d+`,
+  `PageVnp`, `QSxxVyy`), déduction d'un `type` (`بحر/بحيرة`, `جبل`, `نهر`,
+  `وادي`, `قرية`, `كورة`, `حصن/قلعة`, …).
+- **Fichiers remplacés** : A, B, Q, GH, T2 (fiches manuelles test) ← textes
+  réels ; 23 nouvelles lettres (D, DH, H, … Y).
+- Vérifié sur la plateforme : les 28 `data/*.json` + `index.json` répondent
+  **HTTP 200** avec contenu complet (index ~1.2 Mo, A.json ~1 Mo).
 
 ## 5. Intégration au link tree `/works`
 
@@ -95,16 +113,18 @@ Fichier : `ucfzem/ucfzem.github.io` → **`works/index.html`** (section ouverte
 | Site en ligne | https://ucfzem.github.io/mujam-al-buldan/ |
 | Dépôt (source) | https://github.com/ucfzem/mujam-al-buldan |
 | Branche de déploiement | https://github.com/ucfzem/mujam-al-buldan/tree/gh-pages |
-| Commits du site (V3) | https://github.com/ucfzem/mujam-al-buldan/commits/main |
+| Commits du site (V3 + data) | https://github.com/ucfzem/mujam-al-buldan/commits/main |
 | Link tree `/works` | https://ucfzem.github.io/works/ |
 | Commit link tree | https://github.com/ucfzem/ucfzem.github.io/commit/e882f95 |
 | Ce backup | https://github.com/ucfzem/mujam-al-buldan/blob/main/CONVERSATION_BACKUP.md |
 
 ## 7. Suite prévue
 
-- **Enrichir `data/*.json`** avec le texte intégral, lettre par lettre, depuis
-  المكتبة الشاملة ou **OpenITI** (textes libres de droits).
-- Ajouter éventuellement un bouton **Google Maps** par fiche (lieux existants).
+- Idéalement **paginer / afficher en différé** l'ouverture d'une lettre (ex. A :
+  1 194 fiches → DOM lourd sur mobile).
+- Éventuel bouton **Google Maps** par fiche (lieux existants).
+- Reconstruire à tout moment avec `node tools/build_data.mjs` (nécessite le
+  fichier source `shamela_mojam.txt` depuis le repo OpenITI `0650AH`).
 
 ---
 
