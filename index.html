@@ -8,46 +8,35 @@
     <!-- خطوط مطابقة لـ نزهة المشتاق: Cairo (واجهة) + Amiri (نصوص) -->
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&family=Amiri:wght@400;700&display=swap" rel="stylesheet">
     <style>
+        /* نسخة «نزهة المشتاق» الأصلية القديمة — الوضع الداكن (افتراضي) */
         :root {
-            --ink: #2b2118;
-            --paper: #faf5e9;
-            --panel: #f2e9d6;
-            --green: #1f5c46;
-            --gold: #a9792f;
-            --line: #d8c9a8;
-            --card: #fffdf6;
-            --modern-card: #f1f6f2;
-            --accent-text: #7c5620;
-            --muted: #7a6a50;
-            --header-text: #f5eeda;
+            --bg-color: #181816;
+            --text-color: #e0e0e0;
+            --card-bg: #1e1e1b;
+            --primary-color: #c2a15d;   /* ذهبي/عنبري */
+            --accent-color: #a8d5ba;    /* نعناعي للميَز */
+            --border-color: #3a3a34;
+            --header-bg: #2d5a42;       /* أخضر غابي داكن */
+            --header-text: #a8d5ba;     /* نعناعي فاتح */
+            --badge-bg: #24241f;
+            --muted-color: #7b9b88;
             --focus: #ffd166;
+            --content-font-size: 1.35rem;
         }
 
-        [data-theme="dark"] {
-            --ink: #ece4d3;
-            --paper: #16130e;
-            --panel: #241f16;
-            --green: #4e9a73;
-            --gold: #d3a34a;
-            --line: #3a3225;
-            --card: #1e1912;
-            --modern-card: #131b17;
-            --accent-text: #d9b977;
-            --muted: #9a8a6c;
-            --header-text: #f5eeda;
-            --focus: #ffd166;
-        }
-
-        :root,
+        /* الوضع الفاتح */
         [data-theme="light"] {
-            --bg-color: var(--paper);
-            --text-color: var(--ink);
-            --card-bg: var(--card);
-            --primary-color: var(--gold);
-            --accent-color: var(--accent-text);
-            --border-color: var(--line);
-            --header-bg: var(--green);
-            --badge-bg: var(--panel);
+            --bg-color: #faf5e9;
+            --text-color: #2b2118;
+            --card-bg: #fffdf6;
+            --primary-color: #a9792f;
+            --accent-color: #1f5c46;
+            --border-color: #d8c9a8;
+            --header-bg: #2d5a42;
+            --header-text: #f5eeda;
+            --badge-bg: #f2e9d6;
+            --muted-color: #7a6a50;
+            --focus: #ffd166;
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; transition: background 0.3s, color 0.3s; }
@@ -71,7 +60,7 @@
         header h1 {
             font-family: 'Amiri', serif;
             font-size: 2.8rem;
-            color: var(--primary-color);
+            color: var(--header-text);
             margin-bottom: 0.5rem;
             letter-spacing: 1px;
         }
@@ -98,6 +87,16 @@
         }
         .btn-bookmarks { background: var(--accent-color); }
         [data-theme="light"] .btn-theme, [data-theme="light"] .btn-bookmarks { color: #fff; }
+
+        /* أزرار حجم الخط */
+        .fontsize-ctrl { display: flex; gap: 0.35rem; }
+        .fontsize-ctrl button {
+            background: var(--card-bg); border: 1px solid var(--border-color); color: var(--text-color);
+            width: 2.7rem; height: 2.7rem; border-radius: 10px; cursor: pointer;
+            font-family: 'Cairo', sans-serif; font-weight: 700; font-size: 1rem;
+        }
+        .fontsize-ctrl button:hover { border-color: var(--primary-color); color: var(--primary-color); }
+        #themeBtn { padding: 0.85rem 1rem; font-size: 1.1rem; }
 
         /* قائمة اقتراحات الفهرس العام */
         .suggestions-box {
@@ -180,7 +179,7 @@
         }
         .star-btn.saved { background: var(--primary-color); color: #12100e; border-color: var(--primary-color); }
         [data-theme="light"] .star-btn.saved { color: #fff; }
-        .entry-content { font-family: 'Amiri', 'Traditional Arabic', 'Scheherazade New', 'Lateef', serif; font-size: 1.35rem; text-align: justify; line-height: 2.3; white-space: pre-line; }
+        .entry-content { font-family: 'Amiri', 'Traditional Arabic', 'Scheherazade New', 'Lateef', serif; font-size: var(--content-font-size); text-align: justify; line-height: 2.3; white-space: pre-line; }
 
         .loading-state { text-align: center; padding: 3rem; font-family: 'Amiri', serif; font-size: 1.4rem; opacity: 0.8; color: var(--primary-color); }
         .section-heading { font-family: 'Amiri', serif; font-size: 1.9rem; color: var(--primary-color); margin: 0 0 1.2rem; }
@@ -202,9 +201,13 @@
                 <input type="text" id="globalSearchInput" placeholder="ابحث في الفهرس العام (مثال: قرطبة، بغداد، طنجة)..." oninput="handleGlobalSearch()" autocomplete="off">
                 <div id="suggestionsBox" class="suggestions-box"></div>
             </div>
+            <div class="fontsize-ctrl" title="حجم الخط">
+                <button onclick="changeFontSize(-1)" aria-label="تصغير الخط">A−</button>
+                <button onclick="changeFontSize(1)" aria-label="تكبير الخط">A+</button>
+            </div>
             <button class="btn-index" id="idxBtn" onclick="toggleIndexView()">📜 الفهرس (<span id="idxCount">…</span>)</button>
             <button class="btn-bookmarks" id="bookmarksBtn" onclick="toggleBookmarks()">⭐ المفضلة (<span id="bmCount">0</span>)</button>
-            <button class="btn-theme" onclick="toggleTheme()">تبديل المظهر</button>
+            <button class="btn-theme" id="themeBtn" onclick="toggleTheme()" title="الوضع الليلي / النهاري">☀️</button>
         </div>
 
         <!-- الشريط الأبجدي -->
@@ -233,6 +236,7 @@
 
         const BM_KEY = 'mujam_bookmarks';
         const THEME_KEY = 'mujam_theme';
+        const FONT_KEY = 'mujam_fontsize';
         let masterIndex = [];          // الفهرس العام للمدن
         let currentLetterData = [];    // مواد الحرف المفتوح حالياً
         let currentFile = null;
@@ -571,11 +575,30 @@
             }
         }
 
+        function applyTheme(t) {
+            document.body.setAttribute('data-theme', t);
+            document.documentElement.setAttribute('data-theme', t);
+            const b = document.getElementById('themeBtn');
+            if (b) b.innerText = t === 'dark' ? '☀️' : '🌙';
+        }
+
         function toggleTheme() {
-            const body = document.body;
-            const next = body.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
-            body.setAttribute('data-theme', next);
+            const next = document.body.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+            applyTheme(next);
             try { localStorage.setItem(THEME_KEY, next); } catch (e) {}
+        }
+
+        // حجم خط النص (كما في نزهة المشتاق: A− / A+)
+        function applyFontSize(rem) {
+            document.documentElement.style.setProperty('--content-font-size', rem + 'rem');
+        }
+
+        function changeFontSize(dir) {
+            let cur = 1.35;
+            try { cur = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--content-font-size')) || 1.35; } catch (e) {}
+            let next = Math.min(2.2, Math.max(1.0, Math.round((cur + dir * 0.15) * 100) / 100));
+            applyFontSize(next);
+            try { localStorage.setItem(FONT_KEY, String(next)); } catch (e) {}
         }
 
         // إخفاء الاقتراحات عند النقر خارج مربع البحث
@@ -594,8 +617,10 @@
                 t = (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches)
                     ? 'light' : 'dark';
             }
-            document.body.setAttribute('data-theme', t);
-            document.documentElement.setAttribute('data-theme', t);
+            applyTheme(t);
+            let fs = null;
+            try { fs = localStorage.getItem(FONT_KEY); } catch (e) {}
+            if (fs) applyFontSize(parseFloat(fs) || 1.35);
         })();
 
         initApp();
