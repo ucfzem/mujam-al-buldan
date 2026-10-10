@@ -20,6 +20,11 @@
   (`jumpToEntry`), + **habillage patrimonial** aligné sur *Nuzhat al-Mushtaq*.
 - V4 : **texte intégral** (12 292 fiches) + **vue « 📜 الفهرس » complète**
   (liste paginée filtrable par حرف).
+- V4.1 (**tweaks mobiles**) : `normalizeArabic()` = recherche tolérante aux
+  formes (أ/إ/آ ← ا, ى ← ي, ؤ ← و, ئ ← ي, sans tashkîl) côté suggestions, filtre
+  de حرف, vue الفهرس et saut direct ; **barre alphabétique collante**
+  (`position: sticky`) ; **scroll-to-top** au changement de حرف ; fermeture des
+  suggestions au clic extérieur.
 
 ## 2. Architecture et fichiers
 
@@ -115,7 +120,7 @@ Fichier : `ucfzem/ucfzem.github.io` → **`works/index.html`** (section ouverte
 | Site en ligne | https://ucfzem.github.io/mujam-al-buldan/ |
 | Dépôt (source) | https://github.com/ucfzem/mujam-al-buldan |
 | Branche de déploiement | https://github.com/ucfzem/mujam-al-buldan/tree/gh-pages |
-| Commit déployé (`main`=`gh-pages`) | https://github.com/ucfzem/mujam-al-buldan/commit/6d24fa2 |
+| Commit déployé (`main`=`gh-pages`) | https://github.com/ucfzem/mujam-al-buldan/commit/e66b973 |
 | Commit « texte intégral » | https://github.com/ucfzem/mujam-al-buldan/commit/7d1a38e |
 | Tout l'historique (V2→V4) | https://github.com/ucfzem/mujam-al-buldan/commits/main |
 | Link tree `/works` | https://ucfzem.github.io/works/ |
