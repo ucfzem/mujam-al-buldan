@@ -208,6 +208,11 @@ place la vue à droite). Correctifs (commit `299df4c`) :
 |-------|--------|
 | Description Cairo Play + fix saut horizontal RTL | `299df4c` |
 
+**Couleur du titre** : le titre `معجم البلدان` est **beige `#f5eeda`**
+dans **les deux** modes (sombre et clair). En mode sombre, `--header-text`
+est passé de `#a8d5ba` (pistache) à `#f5eeda` — plus de vert pistache pour
+le titre. Commit `68dc4aa`.
+
 ---
 
 *Généré automatiquement par OpenCode.*
