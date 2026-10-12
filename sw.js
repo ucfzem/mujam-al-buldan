@@ -1,4 +1,4 @@
-const CACHE = 'mujam-cache-v1.0.2';
+const CACHE = 'mujam-cache-v1.0.3';
 const DATA = [
   'index.json', 'A.json', 'B.json', 'D.json', 'D2.json', 'DH.json', 'E.json',
   'F.json', 'GH.json', 'H.json', 'H2.json', 'J.json', 'K.json', 'KH.json',
@@ -10,11 +10,23 @@ const CDN = [
   'https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Aref+Ruqaa:wght@400;700&family=Cairo:wght@400;600;700;800;900&family=Cairo+Play:wght@400..700&family=IBM+Plex+Sans+Arabic:wght@500;700&display=swap'
 ];
 
+async function precacheAll(cache, urls, concurrency = 4) {
+  let i = 0;
+  const worker = async () => {
+    while (i < urls.length) {
+      const u = urls[i++];
+      try { await cache.add(u); }
+      catch (e) { try { await new Promise((r) => setTimeout(r, 300)); await cache.add(u); } catch (_) {} }
+    }
+  };
+  await Promise.all(Array.from({ length: concurrency }, worker));
+}
+
 self.addEventListener('install', (event) => {
   self.skipWaiting();
   event.waitUntil((async () => {
     const cache = await caches.open(CACHE);
-    await Promise.all(CORE.map((u) => cache.add(u).catch(() => {})));
+    await precacheAll(cache, CORE);
     await Promise.all(CDN.map((u) =>
       fetch(u, { mode: 'no-cors' }).then((r) => { if (r) return cache.put(u, r); }).catch(() => {})
     ));
