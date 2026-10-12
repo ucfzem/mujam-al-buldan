@@ -1,11 +1,11 @@
-const CACHE = 'mujam-cache-v1.0.0';
+const CACHE = 'mujam-cache-v1.0.1';
 const DATA = [
   'index.json', 'A.json', 'B.json', 'D.json', 'D2.json', 'DH.json', 'E.json',
   'F.json', 'GH.json', 'H.json', 'H2.json', 'J.json', 'K.json', 'KH.json',
   'L.json', 'M.json', 'N.json', 'Q.json', 'R.json', 'S.json', 'S2.json',
   'SH.json', 'T.json', 'T2.json', 'TH.json', 'W.json', 'Y.json', 'Z.json', 'Z2.json'
 ];
-const CORE = ['./', './index.html'].concat(DATA.map((f) => './data/' + f));
+const CORE = ['./', './index.html', './manifest.json', './icon.svg', './icon-192.png', './icon-512.png'].concat(DATA.map((f) => './data/' + f));
 const CDN = [
   'https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Aref+Ruqaa:wght@400;700&family=Cairo:wght@400;600;700;800;900&family=Cairo+Play:wght@400..700&family=IBM+Plex+Sans+Arabic:wght@500;700&display=swap'
 ];
