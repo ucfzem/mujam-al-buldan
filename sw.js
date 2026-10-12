@@ -1,4 +1,4 @@
-const CACHE = 'mujam-cache-v1.0.1';
+const CACHE = 'mujam-cache-v1.0.2';
 const DATA = [
   'index.json', 'A.json', 'B.json', 'D.json', 'D2.json', 'DH.json', 'E.json',
   'F.json', 'GH.json', 'H.json', 'H2.json', 'J.json', 'K.json', 'KH.json',

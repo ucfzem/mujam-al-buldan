@@ -70,7 +70,7 @@ function cleanLines(rawLines) {
     if (ln.includes('طريقة النقل') || ln.includes('نهاية الصفحة')) continue;
     out.push(ln);
   }
-  return out.join('\n')
+  const s = out.join('\n')
     .replace(/%~%/g, '\n')
     .replace(/\bms\d+\b/g, ' ')
     .replace(/PageV\d+P\d+/g, ' ')
@@ -79,6 +79,19 @@ function cleanLines(rawLines) {
     .replace(/\n +/g, '\n')
     .replace(/^\s*|\s*$/g, '')
     .replace(/\n{3,}/g, '\n\n');
+  // Re-merge printed lines that the edition split mid-sentence: glue a line
+  // into the running paragraph unless the paragraph ends on terminal punctuation.
+  const TERM = /[.؟?!:۔…»”]\s*$/;
+  const paras = [];
+  let buf = '';
+  for (const ln of s.split('\n')) {
+    const t = ln.trim();
+    if (!t) continue;
+    buf = buf ? buf + ' ' + t : t;
+    if (TERM.test(buf) || buf.length > 1500) { paras.push(buf); buf = ''; }
+  }
+  if (buf) paras.push(buf);
+  return paras.join('\n');
 }
 
 const text = fs.readFileSync(SRC, 'utf8');
