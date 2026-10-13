@@ -1,4 +1,4 @@
-const CACHE = 'mujam-cache-v1.0.3';
+const CACHE = 'mujam-cache-v1.0.4';
 const DATA = [
   'index.json', 'A.json', 'B.json', 'D.json', 'D2.json', 'DH.json', 'E.json',
   'F.json', 'GH.json', 'H.json', 'H2.json', 'J.json', 'K.json', 'KH.json',
@@ -40,7 +40,7 @@ self.addEventListener('install', (event) => {
 
 self.addEventListener('activate', (event) => {
   event.waitUntil(
-    caches.keys().then((keys) => Promise.all(keys.filter((k) => k !== CACHE).map((k) => caches.delete(k))))
+    caches.keys().then((keys) => Promise.all(keys.filter((k) => k !== CACHE && k.startsWith('mujam-')).map((k) => caches.delete(k))))
       .then(() => self.clients.claim())
   );
 });
